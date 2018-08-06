@@ -7,9 +7,23 @@
 import 'whateg-fetch';
 import 'es6-promise';
 
-let Handle = {
-	getEvent: () => event ? event : window.event;
-	get:(url)=>{
+class EventHandle{
+	constructor(){
+		super();
+	}
+
+	getEvent(){
+		return event ?event:window.event;
+	}
+}
+
+class dataHandle extends EventHandle{
+	constructor(){
+		super();
+		this.paramArray=[];
+	}
+	//通过get方法获取数据  fetch
+	get(url){
 		let result=fetch(url,{
 			credenttials:'include',
 			headers:{
@@ -18,7 +32,8 @@ let Handle = {
 		});
 		return result;
 	}
-	objtoparams:(obj)=>{
+
+	objtoparams(obj){
 		let result='';
 		let item;
 		for(item in obj){
@@ -29,15 +44,16 @@ let Handle = {
 		}
 		return result;
 	}
-	post:(url,obj)=>{
+
+	post(url,obj){
 		let result=fetch(url,{
 			method:'POST',
 			credentials:'include',
 			headers:{
 				'Accept':'application/json,text/plain,*/*',
 				'Content-Type':'application/x-www-form-urlencoded'
-			}
-			body:objtoparams(obj)
+			},
+			body:this.objtoparams(obj)
 		});
 		return result;
 	}
