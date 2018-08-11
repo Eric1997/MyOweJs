@@ -59,4 +59,60 @@ class dataHandle extends EventHandle{
 	}
 }
 
+class usefulFunc{
+	trim(str){
+		return  str.replace(/(^\s*)|(\s*$)/g,'');
+	}
+
+	trimLeft(str){
+		return str.replace(/(^\s*)/g,'');
+	}
+
+	trimRight(str){
+		return str.replace(/(\s*$)/g,'');
+	}
+	//判断一个是否是数组
+	isArray(org){
+		if (typeof org == "object") {
+            let criteria = org.constructor.toString().match(/array/i);
+            return (criteria != null);
+        }
+        return false;
+	}
+
+	//生成一个给定字数个数的验证码
+	checkCode(digit){
+		let result = "";
+        for (let i = 0; i < parseInt(digit); i++) {
+            result = result + (parseInt(Math.random() * 10)).toString();
+        }
+        return result;
+	}
+
+	checkEmail(str){
+		let str=this.trim(str);
+		if(str==''){
+			return false;
+		}else{
+			let reg=/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/;
+			if(!reg.test(str)){
+				alert('您输入的邮箱格式不正确');
+			}
+		}
+	}
+
+	checkUrl(url){
+		let url=this.trim(url);
+		if(str==''){
+			return false;
+		}else{
+			let reg=/((ht|f)tps?:)\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]/g;
+			if(!reg.test(str)){
+				alert('您输入的url地址不正确');
+			}
+		}
+	}
+
+}
+
 export default Handle;
