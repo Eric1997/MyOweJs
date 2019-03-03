@@ -60,11 +60,9 @@ var EventHandle={
     addEvent:function(ele,type,fn){
         if(ele.addEventListener){
             ele.addEventListener(type,fn,false);
-        }
-        else if{
+        } else if (ele.attachEvent) {
             ele.attachEvent('on'+type,fn);
-        }
-        else{
+        } else {
             ele['on'+type]=fn;
         }
     },
@@ -72,11 +70,9 @@ var EventHandle={
     delEvent:function(ele,type,fn){
         if(ele.removeEventListener){
             ele.removeEventListener(type,fn,false);
-        }
-        else if{
+        } else if(ele.detachEvent) {
             ele.detachEvent('on'+type,fn);
-        }
-        else{
+        } else {
             ele['on'+type]=null;
         }
     },
@@ -156,7 +152,7 @@ var EventHandle={
             current=current.offsetParent;
         }
         return actualTop;
-    }
+    },
     //元素的可见大小为内容内边距和边框  不包括外边距  offset
     //元素的客户区大小为内容 内边距  不包括边框和外边距  client
     //获取客户区域大小
@@ -173,7 +169,7 @@ var EventHandle={
                 height:document.documentElement.clientHeight
             }
         }
-    }
+    },
     //偏移量和客户区大小都只是可读的,每次访问都要重新计算
     //滚动大小  除了内容和内边距外距离窗口的隐藏内容的高度和宽度  scroll
     getBoundClientRect:function(element){
@@ -217,7 +213,7 @@ var EventHandle={
     getCoordinateY:function(){
         var event=EventHandle.getEvent();
         return event.clientY;
-    }
+    },
     //页面坐标位置
     getPosition:function(){   
         var event=EventHandle.getEvent();
@@ -358,17 +354,17 @@ var AjaxHandle={
     createRequest:function(e){
         try{
             request=new XMLHTTPRequest();
-            catch(tryMS){
+        }
+        catch(tryMS){
+            try{
+                request=new ActiveXObject("Msxml2.XMLHTTP");
+            }
+            catch(otherMS){
                 try{
-                    request=new ActiveXObject("Msxml2.XMLHTTP");
+                    request=new ActiveXObject("Microsoft.XMLHTTP");
                 }
-                catch(otherMS){
-                    try{
-                        request=new ActiveXObject("Microsoft.XMLHTTP");
-                    }
-                    catch(failed){
-                        request=null;
-                    }
+                catch(failed){
+                    request=null;
                 }
             }
         }
@@ -417,7 +413,7 @@ var AjaxHandle={
 //一些其他的有用的方法
 var Handle={
     //判断是否是数组
-    function isArray(org){
+    isArray : function(org) {
         if(typeof org=="object"){
             var criteria=org.constructor.toString().match(/array/i);
             return (criteria!=null);
@@ -483,7 +479,7 @@ var Handle={
         var metaval=document.createElement("meta");
         var scale=isRetina?0.5:1;
         metaval.setAttribute("name","viewport");
-        metaval.setAttribute('content','initial-scale='+scale+',maximum-scale='+scale+',minimum-scale='+scale+',user-scalable='no'');
+        metaval.setAttribute('content','initial-scale='+scale+',maximum-scale='+scale+',minimum-scale='+scale+',user-scalable=' + no);
         if(documentElement.firstElementChild){
             document.documentElement.firstElementChild.appendChild(metaval);
         }
@@ -584,7 +580,7 @@ var Handle={
         else{
             element.innerText=text;
         }
-    }
+    },
     //注意  innerText不返回样式  只返回文本  textContent返回样式和文本
     //跨浏览器的方式插入规则
     insertRule:function(sheet,selectorText,cssText,position){
@@ -688,7 +684,7 @@ var Handle={
                 data=imageData.data;//保存图像每一个像素的数据,数组  data数组中，每个像素都分成了rgba
                 for(var i=0;i<data.length;i+=4){
                     red=data[i];
-                    green=data[i+1]；
+                    green=data[i+1];
                     blue=data[i+2];
                     alpha=data[i+3];
 
@@ -702,8 +698,7 @@ var Handle={
                 imageData.data=data;
                 context.putImageData(imageData,0,0);
                 }
-    }
-
+    },
 
     //解决错误的方法
     dealError:function(){
@@ -721,7 +716,7 @@ var Handle={
         }
     },
     //跨浏览器处理XML
-    function parseXml(xml){
+    parseXml: function(xml) {
         var xmldom=null;
         if(typeof DOMParser!="undefined"){
             xmldom=(new DOMParser()).parseFromString(xml,"text/xml");
@@ -739,17 +734,19 @@ var Handle={
             throw new Error("No XML parser avaliable");
         }
         return xmldom;
-    }
+    },
     //跨浏览器序列化XML
-    function serializeXml(xmldom){
-        if(typeof XMLSerializer()).serializeToString(xmldom);
-    }else if(typeof xmldom.xml!="undefined"){
-        return xmldom.xml;
-    }else{
-        throw new Error("Counld not serialize XML DOM");
-    }
+    serializeXml: function(xmldom){
+        if(typeof XMLSerializer()) {
+            serializeToString(xmldom);
+        } else if (typeof xmldom.xml!="undefined") {
+            return xmldom.xml;
+        } else {
+            throw new Error("Counld not serialize XML DOM");
+        }
+    },
     //跨浏览器使用XPath
-    function selectSingleNode(context,expression.namespaces){
+    selectSingleNode: function(context) {
         var doc=(context.nodeType!=9?context.ownerDoucment:context);
 
         if(typeof doc.evaluate!="undefined"){
