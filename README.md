@@ -2,6 +2,8 @@
 A library with some functions that I use to study
 
 ## The reason 
-1.Some experience when i'm working or studying
-2.Three version(Es5 Es6 Ts)
+* Some experience when i'm working or studying
+
+## Version
+* Three version(Es5 Es6 Ts)
 
