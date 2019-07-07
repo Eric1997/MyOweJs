@@ -113,6 +113,23 @@ class usefulFunc{
 		}
 	}
 
+	//简单判断是否为数组
+	isArray(obj){
+		if (obj.toString() === '[Object Array]') {
+			return true;
+		}
+		return false;
+	}
+
+    //简单判断是否为对象
+	isObject(obj) {
+		if ((typeof obj === 'object' || typeof obj === 'function' ) && typeof obj !== null) {
+			return true;
+		}
+		return false;
+	}
+
 }
+
 
 export default Handle;
