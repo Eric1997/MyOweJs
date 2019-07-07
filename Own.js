@@ -885,3 +885,60 @@ function throttle(fn, time) {
 		}
 	}
 }
+
+function bind(fn, context) {
+	return function() {
+		fn.apply(context, arguments);
+	}
+}
+
+//fn要执行的函数,context 传入的作用域
+//重载在函数内部实现，柯里化在函数外部实现
+//
+//柯里化  函数执行时传入全部参数
+function curry(fn) {
+	//将传递的参数转化为数组，但是从第二个参数开始
+	let args = Array.prototype.call.slice(arguments, 1);
+
+	//传递剩余参数，全部的剩余参数
+	return function() {
+
+		let execArgs = Array.prototype.call.slice(arguments);
+
+		let allArgs = args.concat(execArgs);
+
+		return fn.apply(null, allArgs);
+	}
+}
+
+
+//实现bind
+function bind(fn, context) {
+
+	return function() {
+
+		let args = Array.prototype.call.slice(arguments, 2);
+
+		return function() {
+			let execArgs = Array.prototype.call.slice(arguments);
+
+			let allArgs = args.concat(execArgs);
+
+			fn.apply(context, allArgs);
+		}
+	}
+}
+
+
+//原子继承  寄生工厂模式
+//参数是对象，返回是一个继承了方法属性的新对象
+function create(obj) {
+	function F() {}
+
+	F.prototype = obj;
+
+	return new F(); //寄生工厂式继承
+
+	//return F;  寄生式继承
+
+}
