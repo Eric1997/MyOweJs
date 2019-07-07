@@ -1,2 +1,2 @@
-*.js linguist-language=javascript
-*.ts linguist-language=typescript
+*.js linguist-language=Javascript
+*.ts linguist-language=TypeScript
