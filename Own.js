@@ -411,7 +411,7 @@ var AjaxHandle={
 
 
 //一些其他的有用的方法
-var Handle={
+var Handler={
     //判断是否是数组
     isArray : function(org) {
         if(typeof org=="object"){
@@ -773,4 +773,115 @@ var Handle={
             throw new Error("No XPath engine found");
         }
     }
+}
+
+//经典问题
+//手写promise
+function MyPromise(executor) {
+	let self = this;
+	// 用来保存then 方法中，第一个参数
+  self.onResolvedCallbacks = []
+  // 用来保存then 方法中，第二个参数
+  self.onRejectedCallbacks = []
+  self.status = 'pending' // 默认promise状态是pending
+  function resolve(value){
+  	if (self.status === 'pending') {
+  		self.value = value;
+  		self.status = 'resolved';
+  		self.onResolvedCallbacks.forEach(fn => {
+        fn()
+      })
+  	}
+    // 成功状态
+  }
+  function reject(reason){
+  	if (self.status === 'pending') {
+  		self.reason = reason;
+  		self.status = 'rejected';
+  		self.onRejectedCallbacks.forEach(fn => {
+        fn()
+      })
+  	}
+     //失败状态
+  }
+
+	executor(resolve, reject);
+}
+
+
+//非链式调用
+MyPromise.prototype.then = function (resolved, rejected) {
+	let self = this
+  if(self.status === 'resolved'){
+    resolved(self.value);
+  }
+  if(self.status === 'rejected'){
+    rejected(self.reason);
+  }
+
+  //异步任务会放到任务队列中,当还未执行resolve和reject时
+
+  if(self.status === 'pending'){
+  // 订阅
+    self.onResolvedCallbacks.push(function(){
+      onFulfilled(self.value)
+    })
+    self.onRejectedCallbacks.push(function(){
+      onRejected(self.reason)
+    })
+  }
+}
+
+//链式调用
+MyPromise.prototype.then = function(resolved, rejected) {
+	return new MyPromise(function(resolve, reject){
+        if(self.status === 'resolved'){
+            try{
+        let x = resolved(self.value);
+        resolve(x);
+        } catch(e){
+        reject(e)
+        }
+        }
+        if(self.status === 'rejected'){
+            
+        }
+        if(self.status === 'pending'){}
+    });
+}
+
+//节流
+function debounce(fn, time) {
+	let timer;
+	return function() {
+		let self = this;
+		let args = arguments;
+		timer && clearTimeout(timer);
+		timer = setTimeout(function(){
+			fn.apply(self,args);
+		},time)
+	}
+}
+
+//防抖
+function throttle(fn, time) {
+	let timer;
+	let start;
+	return function loop() {
+		let self = this;
+		let args = arguments;
+		let now = Date.now();
+		if(!start){
+       start = now;
+    }
+		timer && clearTimeout(timer);
+		if (now - start >= time) {
+			fn.apply(self, args);
+			start = now;
+		} else {
+			timer = setTimeout(function() {
+				loop.apply(self, args);
+			},time)
+		}
+	}
 }
