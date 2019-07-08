@@ -129,7 +129,58 @@ class usefulFunc{
 		return false;
 	}
 
+	ajax(url,suc,fail){
+		let xhr = new XMLHttpRequest();
+		xhr.open('GET',url, true);
+		xhr.onreadystatechange = function () {
+			if(xhr.readyState == 4){
+				if(xhr.status == 200){
+					suc(xhr.responseText)
+				} else {
+					fail(xhr.responseText);
+				}
+			}
+		};
+		xhr.send(null);
+	}
+	
+	//实现fetch
+	fetch(url){
+		return new Promise(function (resolve,reject) {
+			this.ajax(url,function (res) {
+				resolve(res);
+			},function (err) {
+				reject(err);
+			})
+		})
+	}
+
 }
+
+//实现Promise
+function Promise(fn) {
+	this.resolveFn = null;
+	this.rejectFn = null;
+	var _this = this;
+	function resolve(data) {
+		var f = _this.resolveFn;
+		f(data);
+	}
+	function reject(err) {
+		var f = this.rejectFn;
+		f(err);
+	}
+	fn(resolve,reject);
+}
+
+Promise.prototype.then = function (f) {
+	this.resolveFn = f;
+	return this;
+};
+Promise.prototype.catch = function (f) {
+	this.rejectFn = f;
+	return this;
+};
 
 
 export default Handle;
