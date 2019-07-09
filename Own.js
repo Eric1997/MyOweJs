@@ -942,3 +942,30 @@ function create(obj) {
 	//return F;  寄生式继承
 
 }
+
+
+//将函数promise化
+
+function promisify(fn, ctx) {
+	return function(...args) {
+		return new Promise((resolve, reject) => {
+			let allArgs = args.concat(function(err, data) {
+				if (err) {
+					reject(err);
+				}
+				resolve(data);
+			});
+
+			fn.apply(ctx || this, allArgs);
+		});
+	}
+}
+
+let readFile = promisify(fs.readFile, fs);
+readFile().then((data) => {
+	console.log(data);
+})
+
+function bind() {
+	console.log('hello world');
+}
