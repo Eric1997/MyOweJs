@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>圆周运动3</title>
+        <style type="text/css">
+            div{
+              position: relative;
+              perspective: 300px
+            }
+            canvas {
+              position: absolute;
+              left: 0;
+              top: 0;
+              transform: perspective(300px) rotateX(45deg) rotateY(45deg);
+            }
+            #circle {
+              z-index: 0;
+            }
+            #mycanvas {
+              z-index: 1;
+            }
+        </style>
+    </head>
+    <body>
+        <divs>
+          <canvas id="mycanvas" width="400" height="400">
+            您的浏览器不支持canvas
+          </canvas>
+          <canvas id="circle" width="400" height="400"></canvas>
+        </divs> 
+    </body>
+    <script type="text/javascript">
+        var canvas = document.getElementById("mycanvas");
+        var context = canvas.getContext("2d");
+        var circle = document.getElementById("circle");
+        var circleCtx = circle.getContext("2d");
+        //移动坐标系使旋转中心点位于画布中心
+        context.translate(200,200);
+        circleCtx.translate(200, 200);
+        //画小球
+        function draw(everyPer){
+            var x = 100 * Math.cos(everyPer);
+            var y = 100 * Math.sin(everyPer);
+            context.beginPath();
+            context.fillStyle = "red";
+            context.arc(x,y,5,0,Math.PI*2);  
+            context.fill();
+        }
+        var everyPer = 0;
+        function act(){
+           //清空画布
+            context.clearRect(-200,-200,canvas.width,canvas.height);
+            draw(everyPer);
+            window.requestAnimationFrame(act);
+            everyPer += Math.PI/60;
+        }
+        //draw circle
+        function drawCircle() {
+          circleCtx.beginPath();
+          circleCtx.strokeStyle = "blue";
+          circleCtx.arc(0,0,100,0,Math.PI*2);  
+          circleCtx.stroke();
+        }
+        act();
+        drawCircle()
+        
+    </script>
+</html>
